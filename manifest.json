@@ -1,0 +1,28 @@
+{
+  "name": "Chrometrol 2",
+  "manifest_version": 2,
+  "version": "2.0.0",
+  "permissions": [
+    "tabs"
+  ],
+  "background": {
+    "page": "site/index.html",
+    "persistent": false
+  },
+  "commands": {
+    "tabs": {
+      "suggested_key": {
+        "default": "Ctrl+K",
+        "mac": "Command+K"
+      },
+      "description": "Tabs"
+    },
+    "commands": {
+      "suggested_key": {
+        "default": "Shift+Ctrl+K",
+        "mac": "Shift+Command+K"
+      },
+      "description": "Commands"
+    }
+  }
+}

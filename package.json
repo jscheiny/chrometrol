@@ -1,0 +1,48 @@
+{
+  "name": "chrometrol",
+  "description": "Chrome controller",
+  "license": "MIT",
+  "keywords": [],
+  "homepage": "https://github.com/jscheiny/rxviz",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jscheiny/rxviz"
+  },
+  "author": "Jonah Scheinerman",
+  "dependencies": {
+    "es6-shim": "^0.35.2",
+    "lodash": "^4.17.2",
+    "moment": "^2.17.1",
+    "react": "^15.4.1",
+    "react-dom": "^15.4.1",
+    "react-router": "^3.0.0",
+    "rxjs": "^5.0.0-rc.5",
+    "typestyle": "^1.3.1"
+  },
+  "version": "0.1.0",
+  "devDependencies": {
+    "@types/chai": "^3.4.34",
+    "@types/chrome": "0.0.36",
+    "@types/es6-shim": "^0.31.32",
+    "@types/lodash": "^4.14.41",
+    "@types/mocha": "^2.2.33",
+    "@types/moment": "^2.13.0",
+    "@types/react": "^0.14.55",
+    "@types/react-dom": "^0.14.19",
+    "@types/react-router": "^2.0.41",
+    "chai": "^3.5.0",
+    "css-loader": "^0.26.1",
+    "html-webpack-plugin": "^2.24.1",
+    "jquery": "^3.1.1",
+    "less": "^2.7.1",
+    "less-loader": "^2.2.3",
+    "mocha": "^3.2.0",
+    "mocha-webpack": "^0.7.0",
+    "style-loader": "^0.13.1",
+    "ts-loader": "^1.2.2",
+    "typescript": "^2.1.4",
+    "webpack": "^1.13.3",
+    "webpack-dev-server": "^1.16.2",
+    "webpack-node-externals": "^1.5.4"
+  }
+}
