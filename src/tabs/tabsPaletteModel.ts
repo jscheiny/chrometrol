@@ -45,7 +45,6 @@ export class TabsPaletteModel implements RxModel<TabsPaletteState> {
     constructor() {
         this.state$ = Observable.merge(this.defineTabs$(), this.defineQuery$(), this.defineHighlightedTabIndex$())
             .scan(this.reduceState);
-        window.onblur = () => window.close();
     }
 
     private defineTabs$(): Observable<Partial<TabsPaletteState>> {

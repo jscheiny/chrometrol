@@ -7,7 +7,7 @@ interface WindowInfo {
     id: number;
 }
 
-export let currWindow: WindowInfo | null = null;
+export let chrometrolWindow: WindowInfo | null = null;
 
 const WIDTH = 600;
 const HEIGHT = 500;
@@ -25,7 +25,7 @@ function createWindow(command: Command) {
     };
     chrome.windows.create(options, window => {
         if (window) {
-            currWindow = {
+            chrometrolWindow = {
                 command,
                 id: window.id
             };
@@ -34,11 +34,18 @@ function createWindow(command: Command) {
 }
 
 function onCommand(command: Command) {
-    if (currWindow) {
-        if (currWindow.command !== command) {
-            chrome.windows.remove(currWindow.id, () => createWindow(command));
+    if (chrometrolWindow) {
+        if (chrometrolWindow.command !== command) {
+            chrome.windows.remove(chrometrolWindow.id, () => createWindow(command));
         } else {
-            chrome.windows.remove(currWindow.id);
+            let windowCopy = chrometrolWindow;
+            chrome.windows.getLastFocused(lastFocused => {
+                if (lastFocused.id === windowCopy.id) {
+                    chrome.windows.remove(windowCopy.id);
+                } else {
+                    chrome.windows.update(windowCopy.id, { focused: true });
+                }
+            });
         }
     } else {
         createWindow(command);
@@ -46,8 +53,8 @@ function onCommand(command: Command) {
 }
 
 function onRemoveWindow(windowId: number) {
-    if (currWindow && currWindow.id === windowId) {
-        currWindow = null;
+    if (chrometrolWindow && chrometrolWindow.id === windowId) {
+        chrometrolWindow = null;
     }
 }
 
