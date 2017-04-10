@@ -11,7 +11,7 @@ export class TabsPalette extends RxComponent<TabsPaletteState, TabsPaletteModel>
     public render() {
         let results = this.state.displayedTabs.map(this.renderTab);
         return (
-            <div>
+            <div className={container.className}>
                 <input type="text" className={input.className}
                     onKeyDown={this.onKeyDown}
                     onChange={this.onQueryChange}
@@ -19,7 +19,7 @@ export class TabsPalette extends RxComponent<TabsPaletteState, TabsPaletteModel>
                     ref={this.inputRef}
                     placeholder="Tab title or url..."
                 />
-                <div className="results">
+                <div className={resultsContainer.className}>
                     {results}
                 </div>
             </div>
@@ -35,6 +35,8 @@ export class TabsPalette extends RxComponent<TabsPaletteState, TabsPaletteModel>
             this.highlight(prevIndex, event);
         } else if (event.key === "Enter") {
             this.select(this.state.displayedTabs[this.state.highlightedTabIndex]);
+        } else if (event.key === "Escape") {
+            window.close();
         } else {
             this.onQueryChange(event);
         }
@@ -55,16 +57,11 @@ export class TabsPalette extends RxComponent<TabsPaletteState, TabsPaletteModel>
     }
 
     private readonly renderTab = (tab: DisplayedTab, index: number) => {
-        let onHover = () => this.highlight(index);
         let onClick = () => this.select(tab);
         let highlighted = index === this.state.highlightedTabIndex;
+        let className = classes(tabStyle, highlighted ? highlightedTab : notHighlightedTab);
         return (
-            <div
-                className={classes(tabStyle, highlighted && highlightedTab)}
-                key={tab.item.id}
-                onMouseEnter={onHover}
-                onClick={onClick}
-            >
+            <div className={className} key={tab.item.id} onClick={onClick}>
                 <img src={tab.item.favIconUrl} className={favIcon.className} />
                 <div>
                     <MatchText
@@ -92,6 +89,7 @@ export class TabsPalette extends RxComponent<TabsPaletteState, TabsPaletteModel>
     }
 
     private select(displayedTab: DisplayedTab) {
+        console.log(displayedTab.item.title);
         let tab = displayedTab.item;
         chrome.windows.update(tab.windowId, { focused: true }, () => {
             chrome.tabs.highlight({ tabs: [tab.index], windowId: tab.windowId }, () => window.close());
@@ -101,9 +99,19 @@ export class TabsPalette extends RxComponent<TabsPaletteState, TabsPaletteModel>
 
 // Styles
 
+const container = style({
+    position: "relative",
+    height: 600,
+    overflow: "auto",
+});
+
 const input = style({
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
     width: "100%",
-    padding: 10,
+    padding: "11px 10px",
     outline: "none",
     border: "none",
     fontSize: 24,
@@ -116,9 +124,19 @@ const input = style({
     },
 });
 
+const resultsContainer = style({
+    position: "absolute",
+    top: 50,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    overflow: "scroll",
+});
+
 const tabStyle = style({
     padding: 10,
     display: "flex",
+    cursor: "pointer",
 });
 
 const favIcon = style({
@@ -130,6 +148,14 @@ const favIcon = style({
 const highlightedTab = style({
     background: Colors.Background.HIGHLIGHTED,
     color: Colors.Foreground.HIGHLIGHTED,
+});
+
+const notHighlightedTab = style({
+    $nest: {
+        "&:hover": {
+            background: Colors.Background.SOFT_HIGHLIGHTED,
+        },
+    },
 });
 
 const title = style({

@@ -45,6 +45,7 @@ export class TabsPaletteModel implements RxModel<TabsPaletteState> {
     constructor() {
         this.state$ = Observable.merge(this.defineTabs$(), this.defineQuery$(), this.defineHighlightedTabIndex$())
             .scan(this.reduceState);
+        window.onblur = () => window.close();
     }
 
     private defineTabs$(): Observable<Partial<TabsPaletteState>> {
@@ -63,11 +64,6 @@ export class TabsPaletteModel implements RxModel<TabsPaletteState> {
         let update = _.assign({}, DEFAULT_STATE, state, partial);
         let displayedTabs = getDisplayedTabs(update.query, update.tabs);
         let highlightedTabIndex = getHighlightedTabIndex(state, partial, displayedTabs);
-        let highlightedDisplayedTab = displayedTabs[highlightedTabIndex];
-        if (highlightedDisplayedTab) {
-            let highlightedTab = highlightedDisplayedTab.item;
-            chrome.tabs.highlight({ windowId: highlightedTab.windowId, tabs: highlightedTab.index }, _.noop);
-        }
         return {
             tabs: update.tabs,
             displayedTabs,

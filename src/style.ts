@@ -10,6 +10,7 @@ export const Colors = {
     Background: {
         MAIN: "#202B33",
         HIGHLIGHTED: "#394B59",
+        SOFT_HIGHLIGHTED: "#293742",
     },
     MATCH_SHADOW: "#182026",
 };
