@@ -7,12 +7,10 @@ export type Tab = chrome.tabs.Tab;
 type TabsUpdate = (tabs: Tab[]) => Tab[];
 
 export class TabsModel implements RxModel<Tab[]> {
-    public static readonly instance: TabsModel = new TabsModel().initialize();
-
     private readonly updates$ = new Subject<TabsUpdate>();
     public state$: Observable<Tab[]>;
 
-    private initialize() {
+    constructor() {
         this.state$ = this.defineInitialTabs$()
             .merge(this.updates$)
             .scan((tabs: Tab[], update: TabsUpdate) => update(tabs), [])

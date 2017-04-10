@@ -9,7 +9,7 @@ export class TabsPalette extends RxComponent<TabsPaletteState, TabsPaletteModel>
     private input: HTMLInputElement;
 
     public render() {
-        let results = this.state.displayedTabs.map(tab => this.renderTab(tab));
+        let results = this.state.displayedTabs.map(this.renderTab);
         return (
             <div>
                 <input type="text" className={input.className}
@@ -27,10 +27,14 @@ export class TabsPalette extends RxComponent<TabsPaletteState, TabsPaletteModel>
     }
 
     private readonly onKeyDown = (event: React.KeyboardEvent<any>) => {
-        if (event.key === "ArrowUp" || event.key === "ArrowDown") {
-            console.log(event.key);
+        if (event.key === "ArrowDown") {
+            let nextIndex = Math.min(this.state.highlightedTabIndex + 1, this.state.displayedTabs.length - 1);
+            this.highlight(nextIndex, event);
+        } else if (event.key === "ArrowUp") {
+            let prevIndex = Math.max(0, this.state.highlightedTabIndex - 1);
+            this.highlight(prevIndex, event);
         } else if (event.key === "Enter") {
-            console.log(event.key);
+            this.select(this.state.displayedTabs[this.state.highlightedTabIndex]);
         } else {
             this.onQueryChange(event);
         }
@@ -50,24 +54,48 @@ export class TabsPalette extends RxComponent<TabsPaletteState, TabsPaletteModel>
         this.input.focus();
     }
 
-    private readonly renderTab = (tab: DisplayedTab) => {
-        let selected = tab.item.id === this.state.selectedTabId;
+    private readonly renderTab = (tab: DisplayedTab, index: number) => {
+        let onHover = () => this.highlight(index);
+        let onClick = () => this.select(tab);
+        let highlighted = index === this.state.highlightedTabIndex;
         return (
-            <div className={classes(tabStyle, selected && selectedTab)} key={tab.item.id}>
-                <MatchText
-                    className={title.className}
-                    source={tab.item.title || ""}
-                    matches={tab.titleMatches}
-                    selected={selected}
-                />
-                <MatchText
-                    className={url.className}
-                    source={tab.item.url || ""}
-                    matches={tab.urlMatches}
-                    selected={selected}
-                />
+            <div
+                className={classes(tabStyle, highlighted && highlightedTab)}
+                key={tab.item.id}
+                onMouseEnter={onHover}
+                onClick={onClick}
+            >
+                <img src={tab.item.favIconUrl} className={favIcon.className} />
+                <div>
+                    <MatchText
+                        className={title.className}
+                        source={tab.item.title || ""}
+                        matches={tab.titleMatches}
+                        highlighted={highlighted}
+                    />
+                    <MatchText
+                        className={url.className}
+                        source={tab.item.url || ""}
+                        matches={tab.urlMatches}
+                        highlighted={highlighted}
+                    />
+                </div>
             </div>
         );
+    }
+
+    private highlight(index: number, event?: React.KeyboardEvent<any>) {
+        this.props.model.highlightTabAtIndex(index);
+        if (event) {
+            event.preventDefault();
+        }
+    }
+
+    private select(displayedTab: DisplayedTab) {
+        let tab = displayedTab.item;
+        chrome.windows.update(tab.windowId, { focused: true }, () => {
+            chrome.tabs.highlight({ tabs: [tab.index], windowId: tab.windowId }, () => window.close());
+        });
     }
 }
 
@@ -90,11 +118,18 @@ const input = style({
 
 const tabStyle = style({
     padding: 10,
+    display: "flex",
 });
 
-const selectedTab = style({
-    background: Colors.Background.SELECTED,
-    color: Colors.Foreground.SELECTED,
+const favIcon = style({
+    width: 25,
+    height: 25,
+    marginRight: 10,
+});
+
+const highlightedTab = style({
+    background: Colors.Background.HIGHLIGHTED,
+    color: Colors.Foreground.HIGHLIGHTED,
 });
 
 const title = style({

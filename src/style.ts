@@ -4,12 +4,12 @@ export const Colors = {
     Foreground: {
         MAIN: "#D8E1E8",
         MATCH: "#00B3A4",
-        SELECTED: "#EBF1F5",
-        SELECTED_MATCH: "#2EE6D6",
+        HIGHLIGHTED: "#EBF1F5",
+        HIGHLIGHTED_MATCH: "#2EE6D6",
     },
     Background: {
         MAIN: "#202B33",
-        SELECTED: "#394B59",
+        HIGHLIGHTED: "#394B59",
     },
     MATCH_SHADOW: "#182026",
 };

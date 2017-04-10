@@ -6,25 +6,26 @@ import { style, Colors } from "../style";
 export interface MatchTextProps {
     source: string;
     matches: QueryMatches | undefined;
-    selected: boolean;
+    highlighted: boolean;
     className?: string;
 }
 
 export class MatchText extends React.Component<MatchTextProps, {}> {
     public render() {
         if (!this.props.matches) {
-            return <div className="match">{this.props.source}</div>
+            return <div className={this.props.className}>{this.props.source}</div>
         }
 
         let {source} = this.props;
         let {ranges} = this.props.matches;
         let lastIndex = 0;
         let parts: (JSX.Element | string)[] = [];
+        let style = this.props.highlighted ? highlightedMatch : match;
         for (var i = 0; i < ranges.length; i++) {
             let range = ranges[i];
             parts.push(source.substring(lastIndex, range.start));
             parts.push(
-                <span className={highlight.className} key={`match-${range.start}-${range.length}`}>
+                <span className={style.className} key={`match-${range.start}-${range.length}`}>
                     {source.substr(range.start, range.length)}
                 </span>
             );
@@ -38,7 +39,12 @@ export class MatchText extends React.Component<MatchTextProps, {}> {
 
 // Styles
 
-const highlight = style({
+const match = style({
     textShadow: `0 1px 2px ${Colors.MATCH_SHADOW}`,
-    color: Colors.Foreground.SELECTED_MATCH,
+    color: Colors.Foreground.MATCH,
 });
+
+const highlightedMatch = style({
+    textShadow: `0 1px 2px ${Colors.MATCH_SHADOW}`,
+    color: Colors.Foreground.HIGHLIGHTED_MATCH,
+})
