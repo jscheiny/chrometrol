@@ -23,7 +23,7 @@ module.exports = {
     },
     plugins: [
         new HtmlWebpackPlugin({
-            title: 'Chrometrol 2',
+            title: 'Chrometrol',
             filename: 'index.html'
         }),
         new webpack.ProvidePlugin({
