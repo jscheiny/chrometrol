@@ -89,10 +89,9 @@ export class TabsPalette extends RxComponent<TabsPaletteState, TabsPaletteModel>
     }
 
     private select(displayedTab: DisplayedTab) {
-        console.log(displayedTab.item.title);
         let tab = displayedTab.item;
-        chrome.windows.update(tab.windowId, { focused: true }, () => {
-            chrome.tabs.highlight({ tabs: [tab.index], windowId: tab.windowId }, () => window.close());
+        chrome.tabs.highlight({ tabs: [tab.index], windowId: tab.windowId }, () => {
+            chrome.windows.update(tab.windowId, { focused: true }, () => window.close());
         });
     }
 }
