@@ -1,4 +1,3 @@
-import "../utils/style";
 import * as React from "react";
 
 import { TabsPalette } from "./tabsPalette";
